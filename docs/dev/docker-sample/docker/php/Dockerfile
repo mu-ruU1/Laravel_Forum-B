@@ -9,7 +9,9 @@ RUN apt-get update && apt-get install -y \
     bsd-mailx \
     libsasl2-modules \
     default-mysql-client \
-    && docker-php-ext-install mysqli pdo_mysql zip opcache
+    && docker-php-ext-install mysqli pdo_mysql zip opcache \
+    && docker-php-ext-configure gd --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install postfix -y
 
