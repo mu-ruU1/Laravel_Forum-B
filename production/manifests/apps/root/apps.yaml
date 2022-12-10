@@ -1,0 +1,83 @@
+# MetalLB
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metal-lb
+spec:
+  destination:
+    name: ""
+    namespace: metallb-system
+    server: "https://kubernetes.default.svc"
+  source:
+    path: ""
+    repoURL: "https://metallb.github.io/metallb"
+    targetRevision: 0.13.7
+    chart: metallb
+    helm:
+      valueFiles:
+        - values.yaml
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# Ingress-Nginx
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx
+spec:
+  destination:
+    name: ""
+    namespace: ingress-nginx
+    server: "https://kubernetes.default.svc"
+  source:
+    path: ""
+    repoURL: "https://kubernetes.github.io/ingress-nginx"
+    targetRevision: 4.4.0
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: controller.service.loadBalancerIP
+          value: <ip-address> # argocd vault pluginで管理
+    chart: ingress-nginx
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# cert-manager
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+spec:
+  destination:
+    name: ""
+    namespace: cert-manager
+    server: "https://kubernetes.default.svc"
+  source:
+    path: ""
+    repoURL: "https://charts.jetstack.io"
+    targetRevision: v1.10.1
+    chart: cert-manager
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: installCRDs
+          value: "true"
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
