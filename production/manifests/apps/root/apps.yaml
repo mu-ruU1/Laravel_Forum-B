@@ -3,32 +3,23 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: metal-lb
+  namespace: argocd
 spec:
-  destination:
-    name: ""
-    namespace: metallb-system
-    server: "https://kubernetes.default.svc"
-  source:
-    path: ""
-    repoURL: "https://metallb.github.io/metallb"
-    targetRevision: 0.13.7
-    chart: metallb
-    helm:
-      valueFiles:
-        - values.yaml
   project: default
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+  source:
+    repoURL: https://github.com/oithxs/hira-chan.git
+    targetRevision: HEAD
+    path: production/manifests/apps/cluster-wide-apps/metallb/
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: metallb-system
 ---
 # Ingress-Nginx
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: ingress-nginx
+  namespace: argocd
 spec:
   destination:
     name: ""
@@ -58,6 +49,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: cert-manager
+  namespace: argocd
 spec:
   destination:
     name: ""
