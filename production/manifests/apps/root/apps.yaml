@@ -13,6 +13,12 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: metallb-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
 ---
 # Ingress-Nginx
 apiVersion: argoproj.io/v1alpha1
@@ -65,6 +71,37 @@ spec:
         - values.yaml
       parameters:
         - name: installCRDs
+          value: "true"
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# vault
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vault
+spec:
+  destination:
+    name: ""
+    namespace: vault
+    server: "https://kubernetes.default.svc"
+  source:
+    path: ""
+    repoURL: "https://helm.releases.hashicorp.com"
+    targetRevision: 0.23.0
+    chart: vault
+    helm:
+      parameters:
+        - name: ui.serviceType
+          value: LoadBalancer
+        - name: ui.enabled
+          value: "true"
+        - name: server.dev.enabled
           value: "true"
   project: default
   syncPolicy:
