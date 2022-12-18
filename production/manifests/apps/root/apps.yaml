@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/oithxs/hira-chan.git
-    targetRevision: HEAD
+    targetRevision: main
     path: production/manifests/apps/cluster-wide-apps/metallb/
   destination:
     server: https://kubernetes.default.svc
@@ -35,12 +35,10 @@ spec:
     path: ""
     repoURL: "https://kubernetes.github.io/ingress-nginx"
     targetRevision: 4.4.0
-    helm:
-      valueFiles:
-        - values.yaml
-      parameters:
-        - name: controller.service.loadBalancerIP
-          value: <ip-address> # argocd vault pluginで管理
+    # helm:
+    #   parameters:
+    #     - name: controller.service.loadBalancerIP
+    #       value: <ip-address>
     chart: ingress-nginx
   project: default
   syncPolicy:
@@ -67,8 +65,6 @@ spec:
     targetRevision: v1.10.1
     chart: cert-manager
     helm:
-      valueFiles:
-        - values.yaml
       parameters:
         - name: installCRDs
           value: "true"
@@ -80,33 +76,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
 ---
-# vault
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: vault
-spec:
-  destination:
-    name: ""
-    namespace: vault
-    server: "https://kubernetes.default.svc"
-  source:
-    path: ""
-    repoURL: "https://helm.releases.hashicorp.com"
-    targetRevision: 0.23.0
-    chart: vault
-    helm:
-      parameters:
-        - name: ui.serviceType
-          value: LoadBalancer
-        - name: ui.enabled
-          value: "true"
-        - name: server.dev.enabled
-          value: "true"
-  project: default
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+
