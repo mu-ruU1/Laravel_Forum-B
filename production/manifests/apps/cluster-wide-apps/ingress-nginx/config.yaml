@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: hira-chan
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /hira-chan
+            pathType: Prefix
+            backend:
+              service:
+                name: hira-chan-app
+                port:
+                  number: 80
+  ingressClassName: nginx
