@@ -76,4 +76,50 @@ spec:
     syncOptions:
       - CreateNamespace=true
 ---
-
+# hira-chan
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hira-chan
+  namespace: argocd
+spec:
+  source:
+    repoURL: https://github.com/oithxs/hira-chan.git
+    targetRevision: main
+    path: production/manifests/apps/hira-chan/
+  destination:
+    name: ""
+    namespace: hira-chan
+    server: "https://kubernetes.default.svc"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# nginx
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx
+  namespace: argocd
+spec:
+  source:
+    repoURL: https://github.com/oithxs/hira-chan.git
+    targetRevision: main
+    path: production/manifests/apps/nginx/
+  destination:
+    name: ""
+    namespace: nginx
+    server: "https://kubernetes.default.svc"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# db
+---
+# postfix

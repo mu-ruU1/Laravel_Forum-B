@@ -12,7 +12,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: hira-chan-app
+                name: hira-chan-nginx
                 port:
                   number: 80
   ingressClassName: nginx

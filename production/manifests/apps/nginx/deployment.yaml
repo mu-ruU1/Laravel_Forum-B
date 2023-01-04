@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hira-chan-nginx
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hira-chan-nginx
+  template:
+    metadata:
+      labels:
+        app: hira-chan-nginx
+    spec:
+      containers:
+        - name: hira-chan-nginx
+          image: nginx
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: conf
+              mountPath: /etc/nginx/conf.d/
+      volumes:
+        - name: conf
+          configMap:
+            name: nginx-config
